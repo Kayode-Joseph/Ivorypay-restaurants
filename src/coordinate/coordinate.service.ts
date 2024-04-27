@@ -3,11 +3,11 @@ import { Coordinate } from './domain/coordinates.model';
 
 @Injectable()
 export class CoordinateService {
-  static readonly lengthOfOneDegreeLatitude = 111132.92;
+  static readonly lengthOfOneDegreeLatitudeInMeters = 111132.92;
 
   //calculate the value of one meter in degrees
-  static readonly lengthOfOneMeterInDegrees =
-    1 / CoordinateService.lengthOfOneDegreeLatitude;
+  static readonly lengthOfOneMeterLatitudeInDegrees =
+    1 / CoordinateService.lengthOfOneDegreeLatitudeInMeters;
 
   static readonly LATITUDE_RANGE_LOWER_BOUND = -90; //smallest allowed latitude value
 
@@ -31,7 +31,7 @@ export class CoordinateService {
     distanceInMeters: number,
   ): [number, number] {
     const deltaLatitude =
-      CoordinateService.lengthOfOneMeterInDegrees * distanceInMeters;
+      CoordinateService.lengthOfOneMeterLatitudeInDegrees * distanceInMeters;
 
     let latitudeLowerBound: number = latitude - deltaLatitude;
     let latitudeUpperBound: number = latitude + deltaLatitude;
@@ -52,18 +52,22 @@ export class CoordinateService {
   private lengthOfOneMeterLongitude(
     latitude: number,
     longitude: number,
+    distanceInMeters: number,
   ): [number, number] {
     // Convert latitude to radians
     const latitudeRadians = latitude * (Math.PI / 180);
 
-    // Circumference of the Earth at the given latitude
+    // Circumference of the Earth at the given latitude,
+    // due to the mathematical properties of a sphere,
+    //the circumfrence of the earth is different at different latitudes
     const circumferenceAtLatitude =
       2 * Math.PI * CoordinateService.EARTH_RADIUS * Math.cos(latitudeRadians);
 
     // Length of one degree of longitude at the given latitude
     const lengthOfOneDegreeLongitude = circumferenceAtLatitude / 360;
 
-    const deltaLongitude = 1 / lengthOfOneDegreeLongitude; //1 meter length in degree
+    //express distanceInMeters in terms of degree
+    const deltaLongitude = (1 / lengthOfOneDegreeLongitude) * distanceInMeters;
 
     let longitudeLowerBound: number = longitude - deltaLongitude;
     let longitudeUpperBound: number = longitude + deltaLongitude;
