@@ -23,10 +23,26 @@ export class CoordinateService {
     coordinates: Coordinate,
     distanceInMeters: number,
   ): Promise<[Coordinate, Coordinate]> {
-    return [coordinates, coordinates];
+    const latitudeRange: [number, number] =
+      this.calculateRangeOfLatitudeThatCoversDistanceInMeters(
+        coordinates.latitude,
+        distanceInMeters,
+      );
+
+    const longitudeRange: [number, number] =
+      this.calculateRangeOfLongitudeThatCoversDistanceInMeters(
+        coordinates.latitude,
+        coordinates.longitude,
+        distanceInMeters,
+      );
+
+    return [
+      { latitude: latitudeRange[0], longitude: longitudeRange[0] },
+      { latitude: latitudeRange[1], longitude: longitudeRange[1] },
+    ];
   }
 
-  private degreesLatitudeFromDistanceInMeters(
+  private calculateRangeOfLatitudeThatCoversDistanceInMeters(
     latitude: number,
     distanceInMeters: number,
   ): [number, number] {
@@ -49,7 +65,7 @@ export class CoordinateService {
     return [latitudeLowerBound, latitudeUpperBound];
   }
 
-  private lengthOfOneMeterLongitude(
+  private calculateRangeOfLongitudeThatCoversDistanceInMeters(
     latitude: number,
     longitude: number,
     distanceInMeters: number,

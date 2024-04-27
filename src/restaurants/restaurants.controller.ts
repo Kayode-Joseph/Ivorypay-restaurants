@@ -9,7 +9,6 @@ import {
 import { GetRestaurantDto } from './dto/GetRestaurant';
 import { CreateRestaurantDto } from './dto/createRestaurant';
 import { RestaurantsService } from './restaurants.service';
-import { PriceRangeEnableValidator } from './validator/priceRange.validator';
 
 @Controller('restaurants')
 export class RestaurantsController {

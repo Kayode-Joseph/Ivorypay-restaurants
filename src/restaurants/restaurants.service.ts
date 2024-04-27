@@ -4,14 +4,17 @@ import { RestaurantConstants } from './common/restaurant.constants';
 import { PriceCategory } from './common/priceCategory.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Restaurant } from './entities/restaurant.entity';
-import { Repository } from 'typeorm';
+import { Between, MoreThan, Repository } from 'typeorm';
 import { GetRestaurantDto } from './dto/GetRestaurant';
+import { CoordinateService } from 'src/coordinate/coordinate.service';
+import { Coordinate } from 'src/coordinate/domain/coordinates.model';
 
 @Injectable()
 export class RestaurantsService {
   constructor(
     @InjectRepository(Restaurant)
     private readonly restaurantRepository: Repository<Restaurant>,
+    private readonly coordinateService: CoordinateService,
   ) {}
 
   //i wouldnt pass the dto to the service layer in a real world project, im pressed for time
@@ -31,7 +34,15 @@ export class RestaurantsService {
   async findRestaurants(
     findRestaurantsParams: GetRestaurantDto,
   ): Promise<Restaurant[] | null> {
-    return await this.restaurantRepository.find({});
+    const coordinatesRange: [Coordinate, Coordinate] =
+      await this.coordinateService.calculateDegreeRangeForDistance(
+        { ...findRestaurantsParams },
+        findRestaurantsParams.distance,
+      );
+
+    return await this.restaurantRepository.findBy({
+      latitude: Between(coordinatesRange[0].latitude, coordinatesRange[1].latitude),
+    });
   }
 
   private calculatePrice(priceRange: PriceRange): PriceCategory | null {
