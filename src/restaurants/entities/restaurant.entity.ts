@@ -9,14 +9,16 @@ export class Restaurant {
   name: string;
   @Column()
   address: string;
-  @Column()
+  @Column({ type: 'double' })
   longitude: number;
-  @Column()
+  @Column({ type: 'double' })
   latitude: number;
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'double' })
   priceRangeLowerBound: number;
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'double' })
   priceRangeUpperBound: number;
   @Column({ type: 'enum', enum: PriceCategory, nullable: true })
   priceCategory: PriceCategory | null;
+  @Column({ default: 0 })
+  ratings: number;
 }

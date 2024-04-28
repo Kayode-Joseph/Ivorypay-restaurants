@@ -1,4 +1,11 @@
-import { IsInt, IsLatitude, IsLongitude, Length } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsLatitude,
+  IsLongitude,
+  Length,
+} from 'class-validator';
+import { PriceCategory } from '../common/priceCategory.enum';
 
 export class GetRestaurantDto {
   @Length(3)
@@ -9,4 +16,6 @@ export class GetRestaurantDto {
   latitude: number;
   @IsInt()
   distance: number;
+  @IsEnum(PriceCategory)
+  priceCategory: PriceCategory;
 }

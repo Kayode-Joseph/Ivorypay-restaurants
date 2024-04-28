@@ -9,13 +9,14 @@ import {
 import { GetRestaurantDto } from './dto/GetRestaurant';
 import { CreateRestaurantDto } from './dto/createRestaurant';
 import { RestaurantsService } from './restaurants.service';
+import { RestaurantServiceModel } from './common/restaurant.serviceModel';
 
 @Controller('restaurants')
 export class RestaurantsController {
   constructor(private readonly restaurantService: RestaurantsService) {}
 
   @Get()
-  //calulating the logitude / latitude range in the service layer in an expensive operation
+  //using async because calulating the logitude / latitude range in the service layer in an expensive operation
   //we dont want to block the http thread
   async getRestaurant(
     @Query(
@@ -26,7 +27,7 @@ export class RestaurantsController {
       }),
     )
     getRestaurantsParam: GetRestaurantDto,
-  ) {
+  ): Promise<RestaurantServiceModel[]> {
     const { city } = getRestaurantsParam;
     return await this.restaurantService.findRestaurants(getRestaurantsParam);
   }
