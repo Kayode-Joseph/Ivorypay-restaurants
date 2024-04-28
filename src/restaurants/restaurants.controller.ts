@@ -28,7 +28,6 @@ export class RestaurantsController {
     )
     getRestaurantsParam: GetRestaurantDto,
   ): Promise<RestaurantServiceModel[]> {
-    const { city } = getRestaurantsParam;
     return await this.restaurantService.findRestaurants(getRestaurantsParam);
   }
 
