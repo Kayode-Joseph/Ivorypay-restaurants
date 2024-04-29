@@ -13,7 +13,7 @@ import {
 import { CreateRestaurantDto } from './dto/createRestaurant';
 import { RestaurantsService } from './restaurants.service';
 
-@Controller('restaurants')
+@Controller('/v1/restaurants')
 export class RestaurantsController {
   constructor(private readonly restaurantService: RestaurantsService) {}
 
