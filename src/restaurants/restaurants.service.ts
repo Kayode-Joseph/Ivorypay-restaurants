@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRestaurantDto, PriceRange } from './dto/createRestaurant';
+import { CreateRestaurantRequest, PriceRange } from './dto/createRestaurant';
 import { RestaurantConstants } from './common/restaurant.constants';
 import { PriceCategory } from './common/priceCategory.enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Restaurant } from './entities/restaurant.entity';
 import { Between, MoreThan, Repository } from 'typeorm';
-import { GetRestaurantDto } from './dto/GetRestaurant';
+import { GetRestaurantQueryParams } from './dto/GetRestaurant';
 import { CoordinateService } from 'src/coordinate/coordinate.service';
 import { Coordinate } from 'src/coordinate/domain/coordinates.model';
 import { RestaurantServiceModel } from './common/restaurant.serviceModel';
@@ -20,8 +20,8 @@ export class RestaurantsService {
 
   //I wouldnt pass the dto to the service layer in a real world project, im pressed for time
   async createRestuarants(
-    restaurant: CreateRestaurantDto,
-  ): Promise<CreateRestaurantDto> {
+    restaurant: CreateRestaurantRequest,
+  ): Promise<CreateRestaurantRequest> {
     const restaurantEntity: Restaurant = {
       ...restaurant,
       ...restaurant.priceRange,
@@ -33,7 +33,7 @@ export class RestaurantsService {
   }
 
   async findRestaurants(
-    findRestaurantsParams: GetRestaurantDto,
+    findRestaurantsParams: GetRestaurantQueryParams,
   ): Promise<RestaurantServiceModel[]> {
     //we need to first roughly estimate the range coordinates
     // that are within the specified distance before
@@ -86,7 +86,7 @@ export class RestaurantsService {
 
   private async processAndOrderRestaurants(
     restaurants: Restaurant[],
-    findRestaurantsParams: GetRestaurantDto,
+    findRestaurantsParams: GetRestaurantQueryParams,
   ): Promise<RestaurantServiceModel[]> {
     let processedResults: RestaurantServiceModel[] = [];
 
@@ -183,7 +183,7 @@ export class RestaurantsService {
 
   private async calulateDistanceOrderScore(
     processedRestaurant: RestaurantServiceModel,
-    findRestaurantsParams: GetRestaurantDto,
+    findRestaurantsParams: GetRestaurantQueryParams,
   ): Promise<number | null> {
     const distanceBetweenPoints: number =
       await this.coordinateService.calculateDistanceBetween2Coordinates([

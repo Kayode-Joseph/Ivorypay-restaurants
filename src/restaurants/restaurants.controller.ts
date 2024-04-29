@@ -6,8 +6,8 @@ import {
   Query,
   ValidationPipe,
 } from '@nestjs/common';
-import { GetRestaurantDto } from './dto/GetRestaurant';
-import { CreateRestaurantDto } from './dto/createRestaurant';
+import { GetRestaurantQueryParams } from './dto/GetRestaurant';
+import { CreateRestaurantRequest } from './dto/createRestaurant';
 import { RestaurantsService } from './restaurants.service';
 import { RestaurantServiceModel } from './common/restaurant.serviceModel';
 
@@ -26,7 +26,7 @@ export class RestaurantsController {
         forbidNonWhitelisted: true,
       }),
     )
-    getRestaurantsParam: GetRestaurantDto,
+    getRestaurantsParam: GetRestaurantQueryParams,
   ): Promise<RestaurantServiceModel[]> {
     return await this.restaurantService.findRestaurants(getRestaurantsParam);
   }
@@ -40,8 +40,8 @@ export class RestaurantsController {
         forbidNonWhitelisted: true,
       }),
     )
-    createRestaurant: CreateRestaurantDto,
-  ): Promise<CreateRestaurantDto> {
+    createRestaurant: CreateRestaurantRequest,
+  ): Promise<CreateRestaurantRequest> {
     return await this.restaurantService.createRestuarants(createRestaurant);
   }
 }
