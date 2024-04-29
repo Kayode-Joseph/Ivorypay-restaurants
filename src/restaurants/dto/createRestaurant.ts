@@ -18,7 +18,7 @@ export class PriceRange {
   priceRangeUpperBound: number;
 }
 
-export class CreateRestaurantRequest {
+export class CreateRestaurantDto {
   @Length(3)
   name: string;
   @Length(6, undefined, { message: 'invalid address' })

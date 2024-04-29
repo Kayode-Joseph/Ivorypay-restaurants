@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRestaurantRequest, PriceRange } from './dto/createRestaurant';
+import { CreateRestaurantDto, PriceRange } from './dto/createRestaurant';
 import { RestaurantConstants } from './common/restaurant.constants';
 import { PriceCategory } from './common/priceCategory.enum';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,8 +20,8 @@ export class RestaurantsService {
 
   //I wouldnt pass the dto to the service layer in a real world project, im pressed for time
   async createRestuarants(
-    restaurant: CreateRestaurantRequest,
-  ): Promise<CreateRestaurantRequest> {
+    restaurant: CreateRestaurantDto,
+  ): Promise<CreateRestaurantDto> {
     const restaurantEntity: Restaurant = {
       ...restaurant,
       ...restaurant.priceRange,
