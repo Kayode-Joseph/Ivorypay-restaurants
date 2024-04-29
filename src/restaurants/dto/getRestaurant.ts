@@ -7,7 +7,6 @@ import {
   Length,
 } from 'class-validator';
 import { PriceCategory } from '../common/priceCategory.enum';
-import { RestaurantServiceModel } from '../common/restaurant.serviceModel';
 
 export class GetRestaurantQueryParams {
   @Length(3)
@@ -22,6 +21,3 @@ export class GetRestaurantQueryParams {
   @IsEnum(PriceCategory)
   priceCategory: PriceCategory;
 }
-
-export type RestaurantResponse = Omit<RestaurantServiceModel, 'orderScore'>;
-

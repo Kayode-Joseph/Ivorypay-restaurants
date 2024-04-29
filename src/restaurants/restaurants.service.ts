@@ -9,6 +9,8 @@ import { GetRestaurantQueryParams } from './dto/GetRestaurant';
 import { CoordinateService } from 'src/coordinate/coordinate.service';
 import { Coordinate } from 'src/coordinate/domain/coordinates.model';
 import { RestaurantServiceModel } from './common/restaurant.serviceModel';
+import { UpdateRestaurantRequest } from './dto/updateRestaurant';
+
 
 @Injectable()
 export class RestaurantsService {
@@ -33,6 +35,37 @@ export class RestaurantsService {
   }
 
   async deleteRestaurant(name: string): Promise<RestaurantServiceModel> {
+    const restaurantToDelete: RestaurantServiceModel =
+      await this.getRestaurantByName(name);
+
+    await this.restaurantRepository.delete({
+      name,
+    });
+
+    return { ...restaurantToDelete };
+  }
+
+  async updateRestaurant(
+    name: string,
+    updateParamters: UpdateRestaurantRequest,
+  ): Promise<RestaurantServiceModel> {
+    const restaurantToUpdate = await this.getRestaurantByName(name);
+
+    //tries to insert, if it voilates a unique key contraint(name), the table is then updated
+    await this.restaurantRepository.upsert(
+      {
+        name,
+        ...updateParamters,
+      },
+      [],
+    );
+
+    return restaurantToUpdate;
+  }
+
+  private async getRestaurantByName(
+    name: string,
+  ): Promise<RestaurantServiceModel> {
     const restaurantToDelete: RestaurantServiceModel | null =
       await this.restaurantRepository.findOne({
         where: {
@@ -43,8 +76,7 @@ export class RestaurantsService {
     if (!restaurantToDelete) {
       throw new NotFoundException(`Restaurant with name ${name} is not found`);
     }
-
-    return { ...restaurantToDelete };
+    return restaurantToDelete;
   }
 
   async findRestaurants(

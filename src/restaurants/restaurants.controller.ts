@@ -5,16 +5,17 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   ValidationPipe,
 } from '@nestjs/common';
-import {
-  GetRestaurantQueryParams,
-  RestaurantResponse,
-} from './dto/GetRestaurant';
+import { GetRestaurantQueryParams } from './dto/GetRestaurant';
+import { RestaurantResponse } from './dto/commonRestaurant';
 import { CreateRestaurantDto } from './dto/createRestaurant';
 import { RestaurantsService } from './restaurants.service';
-import { DeleteRestaurantParam } from './dto/deleteRestaurant';
+import { RestaurantNamePathVariable } from './dto/commonRestaurant';
+import { pipe } from 'rxjs';
+import { UpdateRestaurantRequest } from './dto/updateRestaurant';
 
 @Controller('/v1/restaurants')
 export class RestaurantsController {
@@ -63,10 +64,33 @@ export class RestaurantsController {
         forbidNonWhitelisted: true,
       }),
     )
-    params: DeleteRestaurantParam,
+    nameObject: RestaurantNamePathVariable,
   ): Promise<RestaurantResponse> {
-    return await this.restaurantService.deleteRestaurant(params.name);
+    return await this.restaurantService.deleteRestaurant(nameObject.name);
   }
 
-  
+  @Put('name')
+  async updateRestaurant(
+    @Param(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: { enableImplicitConversion: true },
+        forbidNonWhitelisted: true,
+      }),
+    )
+    nameObject: RestaurantNamePathVariable,
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        transformOptions: { enableImplicitConversion: true },
+        forbidNonWhitelisted: true,
+      }),
+    )
+    updateRestaurant: UpdateRestaurantRequest,
+  ): Promise<RestaurantResponse> {
+    return await this.restaurantService.updateRestaurant(
+      nameObject.name,
+      updateRestaurant,
+    );
+  }
 }
