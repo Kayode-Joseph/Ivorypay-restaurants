@@ -49,16 +49,18 @@ export class RestaurantsService {
         findRestaurantsParams.distance,
       );
 
-    const restaurants: Restaurant[] = await this.restaurantRepository.findBy({
-      latitude: Between(
-        coordinatesRange[0].latitude,
-        coordinatesRange[1].latitude,
-      ),
-      longitude: Between(
-        coordinatesRange[0].longitude,
-        coordinatesRange[1].longitude,
-      ),
-    });
+    const restaurants: Restaurant[] = await this.restaurantRepository.findBy([
+      {
+        latitude: Between(
+          coordinatesRange[0].latitude,
+          coordinatesRange[1].latitude,
+        ),
+        longitude: Between(
+          coordinatesRange[0].longitude,
+          coordinatesRange[1].longitude,
+        ),
+      },
+    ]);
 
     const processedResults: RestaurantServiceModel[] =
       await this.processAndOrderRestaurants(restaurants, findRestaurantsParams);
@@ -94,6 +96,8 @@ export class RestaurantsService {
         orderScore: 0,
       });
     });
+
+    const sortedRestaurants: RestaurantServiceModel[] = [];
 
     for (let i = 0; i < processedResults.length; i++) {
       const restaurant: RestaurantServiceModel = processedResults[i];
@@ -138,8 +142,6 @@ export class RestaurantsService {
       //so this wont have as much as an impact as the other factors, but it is still a factor.
       restaurant.orderScore = restaurant.orderScore + restaurant.ratings;
 
-      const sortedRestaurants: RestaurantServiceModel[] = [];
-
       for (let i = 0; i < sortedRestaurants.length; i++) {
         const current: RestaurantServiceModel = sortedRestaurants[i];
         //the sortedRestaurants is always sorted, so if restaurant.orderScore < current.orderScore,
@@ -154,11 +156,9 @@ export class RestaurantsService {
       if (sortedRestaurants.length === 0) {
         sortedRestaurants.push(restaurant);
       }
-
-      return sortedRestaurants;
     }
 
-    return [];
+    return sortedRestaurants;
   }
 
   private calculatePrice(priceRange: PriceRange): PriceCategory | null {
