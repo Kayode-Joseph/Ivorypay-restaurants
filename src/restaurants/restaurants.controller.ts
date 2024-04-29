@@ -12,7 +12,6 @@ import {
 } from './dto/GetRestaurant';
 import { CreateRestaurantDto } from './dto/createRestaurant';
 import { RestaurantsService } from './restaurants.service';
-import { RestaurantServiceModel } from './common/restaurant.serviceModel';
 
 @Controller('restaurants')
 export class RestaurantsController {
@@ -21,7 +20,7 @@ export class RestaurantsController {
   @Get()
   //using async because calulating the logitude / latitude range in the service layer in an expensive operation
   //we dont want to block the http thread
-  async getRestaurant(
+  async getRestaurants(
     @Query(
       new ValidationPipe({
         transform: true,
@@ -31,6 +30,8 @@ export class RestaurantsController {
     )
     getRestaurantsParam: GetRestaurantQueryParams,
   ): Promise<GetRestaurantResponse[]> {
+    //the result would already be sorted by RestaurantServiceModel#orderScore, in descending order
+    //so the best match restaurants are at the top of the list
     return await this.restaurantService.findRestaurants(getRestaurantsParam);
   }
 
