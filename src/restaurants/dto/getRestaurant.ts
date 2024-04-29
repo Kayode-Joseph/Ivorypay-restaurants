@@ -23,4 +23,5 @@ export class GetRestaurantQueryParams {
   priceCategory: PriceCategory;
 }
 
-export type GetRestaurantResponse = Omit<RestaurantServiceModel, 'orderScore'>;
+export type RestaurantResponse = Omit<RestaurantServiceModel, 'orderScore'>;
+

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRestaurantDto, PriceRange } from './dto/createRestaurant';
 import { RestaurantConstants } from './common/restaurant.constants';
 import { PriceCategory } from './common/priceCategory.enum';
@@ -30,6 +30,21 @@ export class RestaurantsService {
 
     await this.restaurantRepository.save(restaurantEntity);
     return restaurant;
+  }
+
+  async deleteRestaurant(name: string): Promise<RestaurantServiceModel> {
+    const restaurantToDelete: RestaurantServiceModel | null =
+      await this.restaurantRepository.findOne({
+        where: {
+          name,
+        },
+      });
+
+    if (!restaurantToDelete) {
+      throw new NotFoundException(`Restaurant with name ${name} is not found`);
+    }
+
+    return { ...restaurantToDelete };
   }
 
   async findRestaurants(
@@ -147,7 +162,7 @@ export class RestaurantsService {
         //the sortedRestaurants is always sorted, so if restaurant.orderScore < current.orderScore,
         // it is lower than everything atfer the current, becase the array is sorted,
         //so everything after current has a higher orderScore than current. very efficient way to sort
-        if (restaurant.orderScore < current.orderScore) {
+        if (restaurant.orderScore < (current.orderScore as number)) {
           sortedRestaurants.splice(i, 0, restaurant);
           break;
         }
