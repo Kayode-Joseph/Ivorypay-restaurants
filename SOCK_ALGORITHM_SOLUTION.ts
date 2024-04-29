@@ -31,4 +31,11 @@ function calcualateNumberOfSocksWithCompletePair(
   return numberOfCompletePairs;
 }
 
-export default calcualateNumberOfSocksWithCompletePair;
+console.log(
+  calcualateNumberOfSocksWithCompletePair(
+    3,
+    [10, 20, 20, 10, 10, 30, 50, 10, 20],
+  ),
+);
+
+
