@@ -61,7 +61,7 @@ export class RestaurantsController {
         transformOptions: { enableImplicitConversion: true },
         forbidNonWhitelisted: true,
         skipMissingProperties: true, 
-        //we want to skip missing properties here becuause you can decide to only set only some proprty
+        //we want to skip missing properties here becuause you can decide to only updates some fields
       }),
     )
     updateRestaurant: UpdateRestaurantRequest,
